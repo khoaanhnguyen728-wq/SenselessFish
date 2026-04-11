@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senseless Fish Clan | v2 - 3D Evolution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        body {
+            background-color: #030303;
+            color: #e2e4f3;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0a1a 0%, #030303 100%);
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(199, 203, 227, 0.1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-text {
+            background: linear-gradient(135deg, #ffffff 0%, #8e92a8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 5px 15px rgba(199, 203, 227, 0.2));
+        }
+
+        .card-3d {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
+        }
+
+        .card-3d:hover {
+            transform: scale(1.05) rotateX(5deg) rotateY(5deg);
+            border-color: rgba(199, 203, 227, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .nav-link {
+            position: relative;
+            color: #8e92a8;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: #c7cbe3;
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <nav class="fixed w-full z-50 px-8 py-6 flex justify-between items-center glass-container border-b border-white/5">
+        <div class="flex items-center gap-3 group cursor-pointer">
+            <div class="w-10 h-10 bg-[#c7cbe3] rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:rotate-12 transition-transform">
+                <i class="fa-solid fa-fish text-black text-lg"></i>
+            </div>
+            <span class="font-extrabold tracking-tighter text-2xl text-white">senseless</span>
+        </div>
+        
+        <div class="hidden md:flex gap-10 text-sm font-semibold uppercase tracking-widest">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Commands</a>
+            <a href="#" class="nav-link">Leaderboard</a>
+            <button onclick="openModal('terms')" class="nav-link uppercase">Terms</button>
+            <button onclick="openModal('privacy')" class="nav-link uppercase">Privacy</button>
+        </div>
+
+        <a href="https://discord.gg/YOUR_INVITE" class="bg-[#c7cbe3] text-black px-6 py-2.5 rounded-full text-sm font-black hover:scale-105 active:scale-95 transition-all">
+            INVITE BOT
+        </a>
+    </nav>
+
+    <main class="relative pt-48 pb-32 max-w-6xl mx-auto px-6">
+        <div class="text-center mb-24">
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 hero-text leading-tight">
+                Evolution of Discord <br> <span class="text-[#c7cbe3]">Management.</span>
+            </h1>
+            <p class="text-xl text-[#8e92a8] mb-12 max-w-3xl mx-auto leading-relaxed">
+                Nâng tầm server Discord của bạn với hệ thống quản lý chuyên sâu, bảng xếp hạng thời gian thực và nền kinh tế clan độc bản.
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-6">
+                <button class="bg-white text-black px-10 py-4 rounded-xl font-black text-lg shadow-xl shadow-white/10 hover:bg-[#c7cbe3] transition-colors flex items-center gap-3">
+                    <i class="fa-brands fa-discord"></i> Get Started Now
+                </button>
+                <button class="glass-container px-10 py-4 rounded-xl font-bold text-lg border border-white/10 hover:bg-white/5 transition-all">
+                    View Documentation
+                </button>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="card-3d glass-container p-10 rounded-3xl">
+                <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bolt-lightning text-[#c7cbe3] text-2xl"></i>
+                </div>
+                <h3 class="text-white font-extrabold mb-4 text-xl tracking-tight">Ultra-Fast Core</h3>
+                <p class="text-[#8e92a8] leading-relaxed">Được xây dựng trên Node.js mới nhất, đảm bảo mọi lệnh thực thi chỉ trong mili giây.</p>
+            </div>
+
+            <div class="card-3d glass-container p-10 rounded-3xl">
+                <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-fingerprint text-[#c7cbe3] text-2xl"></i>
+                </div>
+                <h3 class="text-white font-extrabold mb-4 text-xl tracking-tight">Secure Infrastructure</h3>
+                <p class="text-[#8e92a8] leading-relaxed">Bảo vệ Clan khỏi spam và raid bằng hệ thống Blacklist thông minh.</p>
+            </div>
+
+            <div class="card-3d glass-container p-10 rounded-3xl">
+                <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-cube text-[#c7cbe3] text-2xl"></i>
+                </div>
+                <h3 class="text-white font-extrabold mb-4 text-xl tracking-tight">Dynamic Ranking</h3>
+                <p class="text-[#8e92a8] leading-relaxed">Hệ thống xếp hạng 3D tự động hóa hoàn toàn cho cộng đồng game thủ.</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-terms" class="modal flex items-center justify-center p-6">
+        <div class="glass-container max-w-2xl w-full p-10 rounded-3xl relative max-h-[80vh] overflow-y-auto">
+            <button onclick="closeModal('terms')" class="absolute top-6 right-6 text-white/50 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 class="text-3xl font-black mb-6">Terms of Service</h2>
+            <div class="text-[#8e92a8] space-y-4 text-sm leading-relaxed">
+                <p>1. <strong>Chấp nhận:</strong> Bằng cách thêm bot vào server, bạn đồng ý với các quy tắc quản lý của Senseless Fish Clan.</p>
+                <p>2. <strong>Sử dụng:</strong> Không sử dụng bot cho các mục đích vi phạm điều khoản của Discord.</p>
+                <p>3. <strong>Dữ liệu:</strong> Chúng tôi thu thập dữ liệu công khai (ID, username) để phục vụ tính năng xếp hạng.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-privacy" class="modal flex items-center justify-center p-6">
+        <div class="glass-container max-w-2xl w-full p-10 rounded-3xl relative max-h-[80vh] overflow-y-auto">
+            <button onclick="closeModal('privacy')" class="absolute top-6 right-6 text-white/50 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 class="text-3xl font-black mb-6">Privacy Policy</h2>
+            <div class="text-[#8e92a8] space-y-4 text-sm leading-relaxed">
+                <p>Chúng tôi cam kết bảo mật thông tin clan của bạn. Các dữ liệu như <code>staff.json</code> và <code>top.json</code> chỉ được sử dụng nội bộ để hiển thị bảng xếp hạng. Chúng tôi không chia sẻ dữ liệu cho bên thứ ba.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-white/10 py-12 text-center relative">
+        <p class="text-sm font-medium text-[#8e92a8]">&copy; 2026 SENSELESS FISH CLAN. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        // Three.js Background Animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 2000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const particles = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xc7cbe3, size: 2 }));
+        scene.add(particles);
+
+        camera.position.z = 500;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.x += 0.0005;
+            particles.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Modal Logic
+        function openModal(id) { document.getElementById('modal-' + id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById('modal-' + id).style.display = 'none'; }
+        
+        window.onresize = function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+    </script>
+</body>
+</html>
